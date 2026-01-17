@@ -1,6 +1,9 @@
 package alanryan.forumhub.api.controller;
 
 import alanryan.forumhub.api.domain.usuario.DadosAutenticacao;
+import alanryan.forumhub.api.domain.usuario.DadosTokenJWT;
+import alanryan.forumhub.api.domain.usuario.Usuario;
+import alanryan.forumhub.api.infra.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +21,17 @@ public class AutenticacaoController {
     @Autowired
     private AuthenticationManager manager;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
-        var token = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
-        var authentication = manager.authenticate(token);
+        var authenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
+        var authentication = manager.authenticate(authenticationToken);
 
-        return ResponseEntity.ok().build();
+        // O 'getPrincipal' retorna o usuário logado. Fazemos o cast para nossa classe Usuario.
+        var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+
+        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
     }
 }
