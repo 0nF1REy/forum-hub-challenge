@@ -30,6 +30,12 @@ public class SecurityConfigurations {
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
                     req.anyRequest().authenticated();
                 })
+                // Configuração para tratar o 401 quando não há token
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"erro\": \"Token não fornecido ou cabeçalho inválido.\"}");
+                }))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

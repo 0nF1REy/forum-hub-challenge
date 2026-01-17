@@ -24,14 +24,21 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         var tokenJWT = recuperarToken(request);
 
         if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var usuario = repository.findByEmail(subject);
+            try {
+                var subject = tokenService.getSubject(tokenJWT);
+                var usuario = repository.findByEmail(subject);
 
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (RuntimeException e) {
+                // Se o token for inválido, interrompemos a requisição e enviamos 401
+                enviarErroJson(response, e.getMessage());
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
@@ -43,5 +50,12 @@ public class SecurityFilter extends OncePerRequestFilter {
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;
+    }
+
+    // Método auxiliar para escrever o JSON de erro na resposta
+    private void enviarErroJson(HttpServletResponse response, String mensagem) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"erro\": \"" + mensagem + "\"}");
     }
 }
