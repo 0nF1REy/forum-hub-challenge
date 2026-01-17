@@ -34,4 +34,17 @@ public class TokenService {
         // Definição da expiração para 2 horas a partir de agora (Horário de Brasília)
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
+
+    public String getSubject(String tokenJWT) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            return JWT.require(algoritmo)
+                    .withIssuer("API ForumHub")
+                    .build()
+                    .verify(tokenJWT)
+                    .getSubject();
+        } catch (com.auth0.jwt.exceptions.JWTVerificationException exception) {
+            throw new RuntimeException("Token JWT inválido ou expirado!");
+        }
+    }
 }
