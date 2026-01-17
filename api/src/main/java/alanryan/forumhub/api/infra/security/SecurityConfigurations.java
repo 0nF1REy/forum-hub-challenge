@@ -22,6 +22,7 @@ public class SecurityConfigurations {
                     req.requestMatchers(HttpMethod.GET, "/topicos").permitAll();
                     req.requestMatchers(HttpMethod.GET, "/topicos/*").permitAll();
                     req.requestMatchers(HttpMethod.PUT, "/topicos/*").permitAll();
+                    req.requestMatchers(HttpMethod.DELETE, "/topicos/*").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .build();
