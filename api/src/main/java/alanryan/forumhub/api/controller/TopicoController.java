@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/topicos")
 public class TopicoController {
@@ -32,15 +34,19 @@ public class TopicoController {
             return ResponseEntity.badRequest().body("Já existe um tópico com este título e mensagem.");
         }
 
-        // 2. Busca as entidades relacionadas (Autor e Curso)
-        var autor = usuarioRepository.getReferenceById(dados.idAutor());
-        var curso = cursoRepository.getReferenceById(dados.idCurso());
+        // 2. Busca das entidades relacionadas (Autor e Curso)
+        var autor = usuarioRepository.findById(dados.idAutor())
+                .orElseThrow(() -> new RuntimeException("Autor não encontrado com o ID: " + dados.idAutor()));
+
+        var curso = cursoRepository.findById(dados.idCurso())
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado com o ID: " + dados.idCurso()));
 
         // 3. Criação da entidade Topico
-        var topico = new Topico(null, dados.titulo(), dados.mensagem(), null, null, autor, curso);
+        var topico = new Topico(null, dados.titulo(), dados.mensagem(), LocalDateTime.now(), StatusTopico.NAO_RESPONDIDO, autor, curso);
 
         topicoRepository.save(topico);
 
+        // 4. Retorna 201 Created e o DTO de detalhamento
         var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DadosDetalhamentoTopico(topico));
