@@ -84,4 +84,25 @@ public class TopicoController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados) {
+        var topicoOptional = topicoRepository.findById(id);
+
+        if (topicoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var topico = topicoOptional.get();
+
+        // Regra de Negócio: Não permitir atualizar para um título/mensagem que já existe (duplicidade)
+        if (topicoRepository.existsByTituloAndMensagem(dados.titulo(), dados.mensagem())) {
+            return ResponseEntity.badRequest().body("Já existe um tópico com este título e mensagem.");
+        }
+
+        topico.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
+    }
 }
