@@ -19,6 +19,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/hello").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/topicos").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/topicos").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/topicos/*").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .build();

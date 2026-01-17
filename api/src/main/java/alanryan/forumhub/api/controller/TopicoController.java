@@ -6,6 +6,9 @@ import alanryan.forumhub.api.domain.usuario.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -50,5 +53,35 @@ public class TopicoController {
         var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DadosDetalhamentoTopico(topico));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DadosListagemTopico>> listar(
+            @RequestParam(required = false) String nomeCurso,
+            @RequestParam(required = false) Integer ano,
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = org.springframework.data.domain.Sort.Direction.ASC) Pageable paginacao) {
+
+        Page<Topico> pagina;
+
+        if (nomeCurso != null && ano != null) {
+            pagina = topicoRepository.findAllByCursoNomeAndAno(nomeCurso, ano, paginacao);
+        } else if (nomeCurso != null) {
+            pagina = topicoRepository.findAllByCursoNome(nomeCurso, paginacao);
+        } else {
+            pagina = topicoRepository.findAll(paginacao);
+        }
+
+        return ResponseEntity.ok(pagina.map(DadosListagemTopico::new));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id) {
+        var topico = topicoRepository.findById(id);
+
+        if (topico.isPresent()) {
+            return ResponseEntity.ok(new DadosDetalhamentoTopico(topico.get()));
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
