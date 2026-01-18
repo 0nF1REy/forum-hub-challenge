@@ -4,45 +4,60 @@
 
 <div align="center">
 
-![Maintenance](https://img.shields.io/maintenance/yes/2025?style=for-the-badge)
+![Maintenance](https://img.shields.io/maintenance/yes/2026?style=for-the-badge)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/status-Em%20Andamento-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-Concluído-brightgreen?style=for-the-badge)
 ![Java 25](https://img.shields.io/badge/Java-25-blue.svg?style=for-the-badge&logo=openjdk)
 ![Spring Boot 4.0.1](https://img.shields.io/badge/Spring%20Boot-4.0.1-6db33f.svg?style=for-the-badge&logo=spring)
+![Spring Security 7.0.2](https://img.shields.io/badge/Spring%20Security-7.0.2-6db33f.svg?style=for-the-badge&logo=springsecurity)
 ![Build com Maven](https://img.shields.io/badge/build-Maven-red.svg?style=for-the-badge&logo=apachemaven)
-![Plataforma: API REST](https://img.shields.io/badge/platform-API--REST-lightgrey.svg?style=for-the-badge)
 
 </div>
 
 ## 🧭 Guia de Navegação (Índice)
 
-- **[💻 Sobre o Projeto](#sobre-o-projeto)**
-- **[📋 Funcionalidades (CRUD de Tópicos)](#funcionalidades)**
+- **[💻 Sobre o Projeto](#sobre-projeto)**
+- **[📋 Funcionalidades](#funcionalidades)**
+- **[🔐 Segurança e Autenticação](#seguranca)**
 - **[🚀 Tecnologias Utilizadas](#tecnologias)**
 - **[🛠️ Como rodar o projeto](#execucao)**
 - **[📌 Status do Desafio](#status)**
 - **[👤 Sobre o Desenvolvedor](#sobre-o-desenvolvedor)**
-- **[📚 Recursos Adicionais](#recursos-adicionais)**
-- **[📜 Licença](#licenca)**
 
 ## Fórum Hub API - Challenge
 
-## 💻 Sobre o Projeto <a name="sobre-o-projeto"></a>
+## 💻 Sobre o Projeto <a name="sobre-projeto"></a>
 
-O **Fórum Hub** é uma aplicação fictícia de fórum de discussões que necessita de um sistema robusto para gerenciamento de tópicos e interações entre usuários. O projeto foi desenvolvido como uma **API REST**, permitindo o cadastro, listagem, detalhamento, atualização e exclusão de tópicos, seguindo rigorosamente as boas práticas de arquitetura, validações de regras de negócio e desenvolvimento com **Spring Boot**.
+O **Fórum Hub** é uma API REST robusta desenvolvida para o gerenciamento de tópicos de discussão. O projeto foca em entregar um sistema escalável, seguindo rigorosamente os princípios **SOLID**, boas práticas de arquitetura (Clean Code) e um sistema de segurança moderno baseado em tokens.
 
-A aplicação faz parte do desafio **Fórum Hub** do programa **Oracle Next Education (ONE)**, tendo como foco a construção de uma API moderna, organizada e escalável, com persistência em banco de dados relacional e preparação para futuras implementações de autenticação e autorização.
+Esta aplicação é o projeto final do desafio **Fórum Hub** do programa **Oracle Next Education (ONE)**.
 
-## 📋 Funcionalidades (CRUD de Tópicos) <a name="funcionalidades"></a>
+## 📋 Funcionalidades <a name="funcionalidades"></a>
 
-A API permite as seguintes operações na URI `/topicos`:
+### 🔑 Autenticação
 
-- **Cadastro:** `POST /topicos` - Cria um novo tópico (valida duplicidade de título e mensagem).
-- **Listagem:** `GET /topicos` - Retorna todos os tópicos com **Paginação** e **Ordenação** (padrão 10 itens, data asc).
-  - _Filtros:_ É possível filtrar por `nomeCurso` e `ano`.
-- **Detalhamento:** `GET /topicos/{id}` - Retorna os dados de um tópico específico.
-- **Atualização:** `PUT /topicos/{id}` - Altera título e mensagem de um tópico existente.
-- **Exclusão:** `DELETE /topicos/{id}` - Remove um tópico do banco de dados (retorna 204 No Content).
+- **Login:** `POST /login` - Autentica o usuário e retorna um **Token JWT** (válido por 2 horas).
+
+### 💬 Tópicos (CRUD Protegido)
+
+Todas as operações abaixo exigem o cabeçalho `Authorization: Bearer <token>`:
+
+- **Cadastro:** `POST /topicos` - Cria um novo tópico (valida duplicidade e campos obrigatórios).
+- **Listagem:** `GET /topicos` - Retorna tópicos com **Paginação** e **Ordenação** (ASC por data).
+  - _Filtros:_ Busca por `nomeCurso` e `ano`.
+- **Detalhamento:** `GET /topicos/{id}` - Exibe dados completos de um tópico.
+- **Atualização:** `PUT /topicos/{id}` - Permite editar título e mensagem.
+- **Exclusão:** `DELETE /topicos/{id}` - Remoção física do registro (204 No Content).
+
+## 🔐 Segurança e Autenticação <a name="seguranca"></a>
+
+A API utiliza **Spring Security** com política **Stateless**.
+
+- **BCrypt:** Todas as senhas são armazenadas utilizando criptografia hash.
+- **JWT (JSON Web Token):** Utilizado para autorização de cada requisição.
+- **Tratamento de Erros Profissional:**
+  - Erros de autenticação (Token ausente ou inválido) retornam **401 Unauthorized** com mensagens claras em JSON.
+  - Tentativas de acesso a rotas inexistentes ou duplicidade de dados retornam **404** e **400** respectivamente.
 
 ## 🚀 Tecnologias Utilizadas <a name="tecnologias"></a>
 
@@ -96,6 +111,12 @@ No desenvolvimento da API Rest do projeto, foi utilizado o que há de mais moder
       </td>
       <td>Mapeamento objeto-relacional (ORM)</td>
     </tr>
+        <tr>
+      <td align="center">
+      <img src="./resources/images/docs/logotypes/jwt.svg" height="50" alt="JWT">
+      </td>
+      <td>Geração e validação de tokens de segurança</td>
+    </tr>
     <tr>
       <td align="center">
         <a href="https://flywaydb.org" target="_blank">
@@ -118,21 +139,24 @@ No desenvolvimento da API Rest do projeto, foi utilizado o que há de mais moder
 ## 🛠️ Como rodar o projeto <a name="execucao"></a>
 
 1. Clone o repositório.
-2. Certifique-se de ter o **JDK 25** instalado.
+2. Certifique-se de ter o **JDK 25** e o **Maven** instalados.
 3. Configure as variáveis de ambiente no arquivo `.env`:
    - `DB_URL`: jdbc:postgresql://localhost:5432/seu_banco
    - `DB_USERNAME`: seu_usuario
    - `DB_PASSWORD`: sua_senha
    - `JWT_SECRET`: sua_chave_secreta
 4. Execute o comando `mvn spring-boot:run`.
-5. A API estará disponível em `http://localhost:8080`.
+5. A **API** estará disponível em `http://localhost:8080`.
+6. Utilize o **Postman** para realizar o login e obter o token antes de acessar os endpoints de tópicos.
 
 ## 📌 Status do Desafio <a name="status"></a>
 
 - [x] API com rotas seguindo modelo REST.
-- [x] Validações de regras de negócio.
-- [x] Persistência em banco de dados relacional.
-- [ ] Implementação de Autenticação/Autorização (Em andamento).
+- [x] Validações de regras de negócio (Duplicidade).
+- [x] Persistência em banco de dados relacional (PostgreSQL).
+- [x] Migrations com Flyway.
+- [x] Autenticação Stateless com Spring Security e JWT.
+- [x] Tratamento de erros customizado (401, 403, 404, 400).
 
 ## 👤 Sobre o Desenvolvedor <a name="sobre-o-desenvolvedor"></a>
 
