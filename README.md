@@ -12,6 +12,8 @@
 ![Spring Security 7.0.2](https://img.shields.io/badge/Spring%20Security-7.0.2-6db33f.svg?style=for-the-badge&logo=springsecurity)
 ![Build com Maven](https://img.shields.io/badge/build-Maven-red.svg?style=for-the-badge&logo=apachemaven)
 
+<img src="./resources/images/docs/badge/spring.png" height="150" alt="Badge: Fórum Hub">
+
 </div>
 
 ## 🧭 Guia de Navegação (Índice)
