@@ -44,4 +44,9 @@ public class Resposta {
         this.dataCriacao = LocalDateTime.now();
         this.solucao = false;
     }
+
+    public void marcarComoSolucao() {
+        this.solucao = true;
+        this.topico.marcarComoSolucionado();
+    }
 }
