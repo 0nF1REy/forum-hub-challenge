@@ -29,6 +29,7 @@ public class SecurityConfigurations {
                     req.requestMatchers(HttpMethod.GET, "/hello").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/usuarios").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 // Configuração para tratar o 401 quando não há token

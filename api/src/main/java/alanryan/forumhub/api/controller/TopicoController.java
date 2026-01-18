@@ -3,6 +3,7 @@ package alanryan.forumhub.api.controller;
 import alanryan.forumhub.api.domain.curso.CursoRepository;
 import alanryan.forumhub.api.domain.topico.*;
 import alanryan.forumhub.api.domain.usuario.UsuarioRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/topicos")
+@Tag(name = "4. Tópicos")
 public class TopicoController {
 
     @Autowired

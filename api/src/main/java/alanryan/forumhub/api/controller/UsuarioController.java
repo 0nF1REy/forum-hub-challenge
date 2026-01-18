@@ -1,6 +1,7 @@
 package alanryan.forumhub.api.controller;
 
 import alanryan.forumhub.api.domain.usuario.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/usuarios")
+@Tag(name = "3. Usuários")
 public class UsuarioController {
 
     @Autowired

@@ -3,6 +3,7 @@ package alanryan.forumhub.api.controller;
 import alanryan.forumhub.api.domain.resposta.*;
 import alanryan.forumhub.api.domain.topico.TopicoRepository;
 import alanryan.forumhub.api.domain.usuario.UsuarioRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/respostas")
+@Tag(name = "5. Respostas")
 public class RespostaController {
 
     @Autowired
